@@ -1,4 +1,4 @@
-import requests
+﻿import requests
 import random
 import re
 import time
@@ -66,17 +66,21 @@ req_headers = {
 
 
 def get(url,headers=req_headers):
-    #print("1")
-    time.sleep(6)#延时，防被封ip，自行调整
+    print("1")
+    time.sleep(3)#延时，防被封ip，自行调整
     while True:
         #proxy=reapxy()
         try:
             req=requests.get(url,headers=headers,)#proxies={"https": "https://{}".format(proxy)})
             if jsonl( req.text)['code']==0 or jsonl( req.text)['code']==-404:
-                #print("2")
+                print("2")
+                break
+            elif jsonl( req.text)['code']==62002:
+                jsonl( req.text)['code']=404#当作404处理
+                print("4")
                 break
             else:
-                #print("3")
+                print("3")
                 time.sleep(300)
         except:
             pass
@@ -97,7 +101,7 @@ def main():
     for i in range(2,593280000):
         r = get_api(i)
         print(r.text)
-        if r.status_code==404 or jsonl(r.text)["code"]==-404:
+        if r.status_code==404 or jsonl(r.text)["code"]==-404 or jsonl(r.text)["code"]==62002:
             print("av",i,"挂了")
             continue
         json_datas=jsonl(r.text)['data']
